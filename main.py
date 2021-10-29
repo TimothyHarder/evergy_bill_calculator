@@ -1,3 +1,9 @@
+"""
+This code was written to compare my bills against what my power company advertises the rates to be,
+and to give more detail on the charges than their bills do.
+
+I in no way guarantee the accuracy of this information, nor is this code meant for anything but personal use.
+"""
 import copy
 import re
 import datetime
@@ -5,18 +11,15 @@ import datetime
 import tabulate
 from selenium import webdriver
 from selenium.webdriver.firefox.options import  Options
-from selenium.webdriver.common.keys import Keys
+# from selenium.webdriver.common.keys import Keys
 
 '''
 1. Retail Energy Cost Adjustment
-    How do I know what the number is???
     RECA Factor / Fuel Adjustment
-    Where is the calculated number? Is it variable month to month? How can I accurately calculate this?
     Set Quarterly
     0.016149/kWh
 
 2. Property Tax Surcharge
-    How do I know what this number is??
     PTS Factor
     0.00123/kWh
 
@@ -48,7 +51,6 @@ Basic Service Fee
 
 City Franchise Fee
 7.27/bill
-
 
 Rate information:
 https://www.evergy.com/manage-account/rate-information/plan-options/standard-plan?hasTerritory=true
@@ -107,7 +109,7 @@ def get_info_from_kcpl(month=None):
     options = Options()
     options.headless = False
 
-    driver = webdriver.Firefox(options=options, executable_path="")
+    driver = webdriver.Firefox(options=options, executable_path="/Users/Harder/bin/geckodriver")
 
     driver.get(f"https://www.evergy.com/manage-account/rate-information/plan-options/standard-plan?hasTerritory=true")
 
@@ -211,9 +213,14 @@ def calculate_bill(kWh):
 
         data.append([friendly_rate_names[cost], f"{rate}", rate_costs[cost]])
 
+    print('\n')
+    print(f"Bill for {kwh_charged}kWh")
     print(tabulate.tabulate(data, headers=headers))
 
 
 get_info_from_kcpl(month="October")
+
+kwh_charged = "1177"
+
 print(rates)
-calculate_bill("1177")
+calculate_bill(kwh_charged)
